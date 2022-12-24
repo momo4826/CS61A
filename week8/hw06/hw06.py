@@ -33,10 +33,10 @@ class Mint:
         self.update()
 
     def create(self, coin):
-        "*** YOUR CODE HERE ***"
+        return coin(self.year)
 
     def update(self):
-        "*** YOUR CODE HERE ***"
+        self.year = self.present_year
 
 
 class Coin:
@@ -46,7 +46,10 @@ class Coin:
         self.year = year
 
     def worth(self):
-        "*** YOUR CODE HERE ***"
+        """ don't change self.cents"""
+        extra = Mint.present_year - self.year - 50 if (Mint.present_year - self.year) > 50 else 0
+        if self.cents:
+            return self.cents + extra
 
 
 class Nickel(Coin):
@@ -73,7 +76,14 @@ def store_digits(n):
     >>> print("Do not use str or reversed!") if any([r in cleaned for r in ["str", "reversed"]]) else None
     >>> link1 = Link(3, Link(Link(4), Link(5, Link(6))))
     """
-    "*** YOUR CODE HERE ***"
+    res = None
+    while n:
+        if res:
+            res = Link(n%10, res)
+        else:
+            res = Link(n%10)
+        n //= 10
+    return res
 
 
 def deep_map_mut(func, lnk):
@@ -93,7 +103,12 @@ def deep_map_mut(func, lnk):
     >>> print(link1)
     <9 <16> 25 36>
     """
-    "*** YOUR CODE HERE ***"
+    if not (lnk is Link.empty):
+        if isinstance(lnk.first, Link):
+            deep_map_mut(func, lnk.first)
+        else:
+            lnk.first = func(lnk.first)
+        deep_map_mut(func, lnk.rest)
 
 
 def two_list(vals, counts):
@@ -115,7 +130,15 @@ def two_list(vals, counts):
     >>> c
     Link(1, Link(1, Link(3, Link(3, Link(2)))))
     """
-    "*** YOUR CODE HERE ***"
+
+    res = Link.empty
+    vals.reverse()
+    counts.reverse()
+    for i in range(len(vals)):
+        for _ in range(counts[i]):
+            res = Link(vals[i], res)
+    return res
+        
 
 
 class VirFib():
@@ -144,7 +167,12 @@ class VirFib():
         self.value = value
 
     def next(self):
-        "*** YOUR CODE HERE ***"
+        if self.value == 0:
+            res = VirFib(1)
+        else:
+            res = VirFib(self.previous + self.value)
+        res.previous = self.value
+        return res
 
     def __repr__(self):
         return "VirFib object, value " + str(self.value)
@@ -153,6 +181,7 @@ class VirFib():
 def is_bst(t):
     """Returns True if the Tree t has the structure of a valid BST.
 
+    If t has two branches, then branches[0] is left node and branches[1] is right node; if t has one branch, it can be left or right node.
     >>> t1 = Tree(6, [Tree(2, [Tree(1), Tree(4)]), Tree(7, [Tree(7), Tree(8)])])
     >>> is_bst(t1)
     True
@@ -175,7 +204,47 @@ def is_bst(t):
     >>> is_bst(t7)
     False
     """
-    "*** YOUR CODE HERE ***"
+    if t.is_leaf():
+        # print("0")
+        return True
+    
+    if len(t.branches) > 2 or not (all([is_bst(b) for b in t.branches])):
+        # print("1")
+        return False
+
+    if len(t.branches) == 1:
+        if t.branches[0].label <= t.label:
+            left, right = t.branches[0], None
+        elif t.branches[0].label > t.label:
+            left, right = None, t.branches[0]
+    elif len(t.branches) == 2:
+        left, right = t.branches[0], t.branches[1]
+
+    if left and right:
+        r3 = (t.label == bst_max(Tree(t.label, [left]))) and (t.label == bst_min(Tree(t.label, [right]))) 
+    elif not left and right:
+        r3 = t.label == bst_min(Tree(t.label, [right]))
+    elif left and not right:
+        r3 = t.label == bst_max(Tree(t.label, [left]))
+    
+    if r3:
+        return True
+    else:
+        # print("3")
+        return False
+
+def bst_max(t):
+    if t.is_leaf():
+        return t.label
+    else:
+        return max([t.label] + [bst_max(b) for b in t.branches])   
+def bst_min(t):
+    if t.is_leaf():
+        return t.label
+    else:
+        return min([t.label] + [bst_min(b) for b in t.branches])  
+
+
 
 
 class Link:
