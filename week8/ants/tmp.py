@@ -45,3 +45,13 @@ gamestate.places["tunnel_0_4"].add_insect(ant)
 gamestate.places["tunnel_0_5"].add_insect(bee3)
 laser.action(gamestate)
 
+class Bear():
+    __repr__ = lambda x: "Viola"
+    def __init__(self):
+        self.__repr__  = lambda: "BadBear()"
+        self.__str__ = lambda: "a bad bear"
+
+    # def __repr__(self):
+    #     return 'Bear()'
+    # def __str__(self):
+    #     return 'a bear'
