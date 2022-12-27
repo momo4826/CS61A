@@ -8,8 +8,8 @@ def count(f):
     counted.call_count = 0
     return counted
 
-@count
-def f1(n):
+
+def f1(n:'integer')->'integer':
     """O(n)
     T(n) = a + T(n - 1), By induction T(n) = n * a + T(0) = n * a + b = O(n)"""
     if n <= 0:
