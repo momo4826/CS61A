@@ -37,17 +37,26 @@ def do_define_form(expressions, env):
         # assigning a name to a value e.g. (define x (+ 1 2))
         validate_form(expressions, 2, 2)  # Checks that expressions is a list of length exactly 2
         # BEGIN PROBLEM 4
-        if expressions.rest.__len__() == 1:
-            """if it's (define x 2), the expression will be Pair(2 Pair(2 nil)), and expressions.rest will be Pair(2, nil), i.e. (2), but number is not callable, so just send 2 into scheme_eval"""
-            env.define(signature, scheme_eval(expressions.rest.first, env))
-        else:
-            env.define(signature, scheme_eval(expressions.rest, env))
+        """
+        This clause targets cases like (define x (+ 1 2)), so the expression will be (x (+ 1 2)), the signature will be x, the second operands of "(define x (+ 1 2))" will be (+ 1 2). In order to bind the symbol with value, we need to use scheme_eval to evalutate the second operand. However, we can't directly take expressions.rest as input for scheme_eval. Because it will be Pair(Pair('+', Pair(1, Pair(2, nil))), nil), while what we need is Pair('+', Pair(1, Pair(2, nil))).
+
+        Implement the scheme_read in lab11 help me understand this problem better.
+        """
+        env.define(signature, scheme_eval(expressions.rest.first, env))
+        
         return signature
         # END PROBLEM 4
     elif isinstance(signature, Pair) and scheme_symbolp(signature.first):
         # defining a named procedure e.g. (define (f x y) (+ x y))
         # BEGIN PROBLEM 10
-        "*** YOUR CODE HERE ***"
+        name = signature.first
+        formals = signature.rest
+        body = expressions.rest
+        expr4p = Pair(formals, body)
+        # print('expr4p', expr4p)
+        p = do_lambda_form(expr4p, env)
+        env.define(name, p)
+        return name
         # END PROBLEM 10
     else:
         bad_signature = signature.first if isinstance(signature, Pair) else signature
@@ -83,6 +92,10 @@ def do_begin_form(expressions, env):
 def do_lambda_form(expressions, env):
     """Evaluate a lambda form.
 
+    In Scheme, it is legal to place more than one expression in the body of a procedure. (There must be at least one expression.) The body attribute of a LambdaProcedure instance is therefore a Scheme list of body expressions.
+
+    The formals attribute of a LambdaProcedure instance should be a properly nested Pair expression.
+
     >>> env = create_global_frame()
     >>> do_lambda_form(read_line("((x) (+ x 2))"), env) # evaluating (lambda (x) (+ x 2))
     LambdaProcedure(Pair('x', nil), Pair(Pair('+', Pair('x', Pair(2, nil))), nil), <Global Frame>)
@@ -91,7 +104,9 @@ def do_lambda_form(expressions, env):
     formals = expressions.first
     validate_formals(formals)
     # BEGIN PROBLEM 7
+    # notice the body in the example is Pair(Pair('+', Pair('x', Pair(2, nil))), nil), so it's expressions.rest, not expressions.rest.first. Another clue is that the body will be evaluated by eval_all instead of scheme_eval because there will be multiple expressions in lambda body, so it's like a begin form.
     body = expressions.rest
+    # print('formals', formals)
     p = LambdaProcedure(formals, body, env)
     return p
     # END PROBLEM 7
@@ -106,7 +121,7 @@ def do_if_form(expressions, env):
     >>> do_if_form(read_line("(#f (print 2) (print 3))"), env) # evaluating (if #f (print 2) (print 3))
     3
     """
-    validate_form(expressions, 2, 3)
+    validate_form(expressions, 2, 3)#the length of expressions is 2(only condition if-true-clause) or 3(condition if-true-clause if-false-clause)
     if is_scheme_true(scheme_eval(expressions.first, env)):
         return scheme_eval(expressions.rest.first, env)
     elif len(expressions) == 3:
@@ -115,6 +130,8 @@ def do_if_form(expressions, env):
 
 def do_and_form(expressions, env):
     """Evaluate a (short-circuited) and form.
+
+    For 'and', if there are no sub-expressions in an and expression, it evaluates to #t.
 
     >>> env = create_global_frame()
     >>> do_and_form(read_line("(#f (print 1))"), env) # evaluating (and #f (print 1))
@@ -128,12 +145,24 @@ def do_and_form(expressions, env):
     False
     """
     # BEGIN PROBLEM 12
-    "*** YOUR CODE HERE ***"
+    if expressions == nil:
+        return True
+
+    # expressions.first should be evalutated first then check whether it's true. And the eval function cannot be applied twice, so we assign it to tmp here.
+    tmp = scheme_eval(expressions.first, env)
+    if is_scheme_true(tmp):
+        if len(expressions) == 1:
+            return tmp
+        else:
+            return do_and_form(expressions.rest, env)
+    return False
     # END PROBLEM 12
 
 
 def do_or_form(expressions, env):
     """Evaluate a (short-circuited) or form.
+
+    For 'or', if there are no sub-expressions in an or expression, it evaluates to #f.
 
     >>> env = create_global_frame()
     >>> do_or_form(read_line("(10 (print 1))"), env) # evaluating (or 10 (print 1))
@@ -147,7 +176,16 @@ def do_or_form(expressions, env):
     6
     """
     # BEGIN PROBLEM 12
-    "*** YOUR CODE HERE ***"
+    if expressions == nil:
+        return False
+    
+    tmp = scheme_eval(expressions.first, env)
+    if is_scheme_true(tmp):
+        return tmp
+    if expressions.rest:
+        return do_or_form(expressions.rest, env)
+    else:
+        return False
     # END PROBLEM 12
 
 
@@ -168,7 +206,9 @@ def do_cond_form(expressions, env):
             test = scheme_eval(clause.first, env)
         if is_scheme_true(test):
             # BEGIN PROBLEM 13
-            "*** YOUR CODE HERE ***"
+            if len(clause) == 1:
+                return test
+            return eval_all(clause.rest, env)
             # END PROBLEM 13
         expressions = expressions.rest
 
@@ -194,7 +234,14 @@ def make_let_frame(bindings, env):
         raise SchemeError('bad bindings list in let form')
     names = vals = nil
     # BEGIN PROBLEM 14
-    "*** YOUR CODE HERE ***"
+    def helper(my_pair):
+        if my_pair == nil:
+            return nil, nil
+        validate_form(my_pair.first, 2, 2)
+        return Pair(my_pair.first.first, helper(my_pair.rest)[0]), Pair(scheme_eval(my_pair.first.rest.first, env), helper(my_pair.rest)[1])
+        
+    names, vals = helper(bindings)
+    validate_formals(names) # this function validates that its argument is a Scheme list of symbols for which each symbol is distinct.
     # END PROBLEM 14
     return env.make_child_frame(names, vals)
 
@@ -243,6 +290,12 @@ def do_unquote(expressions, env):
 #################
 # Dynamic Scope #
 #################
+"""
+All of the Scheme procedures we've seen so far use **lexical scoping**: the parent of the new call frame is the environment in which the procedure was defined. 
+
+Another type of scoping, which is not standard in Scheme but appears in other variants of Lisp, is called **dynamic scoping**: the parent of the new call frame is the environment in which the call expression was evaluated. 
+
+"""
 
 def do_mu_form(expressions, env):
     """Evaluate a mu form."""
@@ -250,7 +303,8 @@ def do_mu_form(expressions, env):
     formals = expressions.first
     validate_formals(formals)
     # BEGIN PROBLEM 11
-    "*** YOUR CODE HERE ***"
+    body = expressions.rest
+    return MuProcedure(formals, body)
     # END PROBLEM 11
 
 

@@ -16,7 +16,7 @@ class Frame:
 
     def __init__(self, parent):
         """An empty frame with parent frame PARENT (which may be None)."""
-        self.bindings = {}
+        self.bindings = {} # {symbol:value}
         self.parent = parent
 
     def __repr__(self):
@@ -34,13 +34,13 @@ class Frame:
     def lookup(self, symbol):
         """Return the value bound to SYMBOL. Errors if SYMBOL is not found."""
         # BEGIN PROBLEM 1
-        which_frame = self
-        while which_frame:
-            if symbol in which_frame.bindings:
-                return which_frame.bindings[symbol]
-            which_frame = which_frame.parent
-        # END PROBLEM 1
-        raise SchemeError('unknown identifier: {0}'.format(symbol))
+        if symbol in self.bindings:
+            return self.bindings[symbol]
+        else:
+            if self.parent == None:
+                raise SchemeError('unknown identifier: {0}'.format(symbol))
+            else:
+                return self.parent.lookup(symbol)
 
     def make_child_frame(self, formals, vals):
         """Return a new local frame whose parent is SELF, 
@@ -59,11 +59,14 @@ class Frame:
             raise SchemeError('Incorrect number of arguments to function call')
         # BEGIN PROBLEM 8
         new_frame = Frame(self)
-        ptr1, ptr2 = formals, vals
-        while formals:
+
+        ptr1 = formals
+        ptr2 = vals
+        while ptr1:
             new_frame.define(ptr1.first, ptr2.first)
-            formals = ptr1.rest
-            vals = ptr2.rest
+            ptr1 = ptr1.rest
+            ptr2 = ptr2.rest
+
         return new_frame
         # END PROBLEM 8
 
@@ -82,7 +85,7 @@ class BuiltinProcedure(Procedure):
     def __init__(self, py_func, need_env=False, name='builtin'):
         self.name = name
         self.py_func = py_func
-        self.need_env = need_env
+        self.need_env = need_env # The environment is required, for instance, to implement the built-in eval procedure.
 
     def __str__(self):
         return '#[{0}]'.format(self.name)
