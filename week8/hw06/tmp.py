@@ -17,7 +17,31 @@ from hw06 import *
 # print(Mint.present_year)
 # dime.worth()
 
-t3 = Tree(6, [Tree(2, [Tree(4), Tree(1)]), Tree(7, [Tree(7), Tree(8)])])
-print(is_bst(t3))
-print("----------")
+# t3 = Tree(6, [Tree(2, [Tree(4), Tree(1)]), Tree(7, [Tree(7), Tree(8)])])
+# print(is_bst(t3))
+# print("----------")
+
+def sprout_tree(root, sprouter, d):
+    """
+    >>> minus_plus_one = lambda x: [x - 1, x + 1]
+    >>> print(sprout_tree(3, minus_plus_one, 0))
+    3
+    >>> print(sprout_tree(3, minus_plus_one, 1))
+    3
+      2
+      4
+    >>> print(sprout_tree(3, minus_plus_one, 2))
+    3
+      2
+        1
+        3
+      4
+        3
+        5
+    """
+    if d == 0:
+        return Tree(root)
+        
+    new_branches = [sprout_tree(i, sprouter, d-1) for i in sprouter(root)]
+    return Tree(root, new_branches)
 
