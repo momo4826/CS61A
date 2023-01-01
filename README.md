@@ -22,7 +22,8 @@ Here you can find notes, lab and homework solutions, and projects for UC Berkele
 10. Efficiency [lab09](week9/lab09)
 11. Scheme [hw07](week10/hw07) [lab10](week11/lab10) [hw08](week11/hw08)
 12. Calculator(example), Interpreters [lab11](week12/lab11)
-
+13. Tail calls
+14. Macros [lab12](week13/lab12) [hw09](week12/hw09)
 ## Projects
 1. [Game Hog](week2/hog)
 2. [Cats](week5/cats)
