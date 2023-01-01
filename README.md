@@ -8,9 +8,9 @@
 
 Contents
 1. [Intro](##Intro)
-2. [Mapping from Lectures to Assignments](##Lectures->Labs and homeworks)
-3. [Mapping from Questions to Lectures and Assignments](##Take-away from this course)
-4. Projects[##Projects]
+2. [Mapping from Lectures to Assignments](##Lectures->Labs-and-homeworks)
+3. [Mapping from Questions to Lectures and Assignments](##Take-away-from-this-course)
+4. [Projects](##Projects)
 ## Intro
 Here you can find notes, lab and homework solutions, and projects for UC Berkeley CS61A Fall 2022.
 
