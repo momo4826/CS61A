@@ -7,14 +7,15 @@
 </p>
 
 Contents
-1. [Intro](##Intro)
-2. [Mapping from Lectures to Assignments](##Lectures->Labs-and-homeworks)
-3. [Mapping from Questions to Lectures and Assignments](##Take-away-from-this-course)
-4. [Projects](##Projects)
-## Intro
+1. [Intro](#1-Intro)
+2. [Mapping from Lectures to Assignments](#2-Lectures->Labs-and-homeworks)
+3. [Mapping from Questions to Lectures and Assignments](#3-Take-away-from-this-course)
+4. [Projects](#4-Projects)
+
+<h2 id='intro'>1. Intro</h2>
 Here you can find notes, lab and homework solutions, and projects for UC Berkeley CS61A Fall 2022.
 
-## Lectures->Labs and homeworks
+<h2 id='lectures'>2. Lectures->Labs and homeworks</h2>
 1. Functions, Control [lab01](week2/lab01) [hw01](week1/hw01)
 2. Higher-Order Functions, Lambda Expressions [lab02](week3/lab02) [hw02](week2/hw02)
 3. Mid-term review [lab03](week3/lab03)
@@ -31,8 +32,8 @@ Here you can find notes, lab and homework solutions, and projects for UC Berkele
 14. Macros [lab12](week13/lab12) [hw09](week12/hw09)
 15. SQL, Table, Aggregation, Databases [hw10](week13/hw10) [lab13](week15/lab13)
 16. Final examples, Conclusion
+<h2 id='take-away'>3. Take-away from this course</h2>
 
-## Take-away from this course
 | Questions(the contents start with * are extensions from lectures) | Answers                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | Relevant lectures                    | Relevant assignments                                | Relevant projects |
 |-------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------|-----------------------------------------------------|----------|
 | what is expression?                                               | An expression describes a computation and **evaluates to a value** in the context of an environment.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | Functions, Interpreter, Control      | lab01(Functions, control), hw01((Functions, control) | Scheme interpreter project | 
@@ -91,7 +92,7 @@ Here you can find notes, lab and homework solutions, and projects for UC Berkele
 |The advantage of tail call? | A call expression is not a tail call if more computation is still required in the calling procedure. <br>The return value of the tail call is the return value of the current procedure call. Therefore, tail calls shouldn't increase the environment size. | Tail calls                           | | |
 | what are macros? | A macro is an operation performed on the source code of a program before evaluation.  Macros exist in many languages, but are easiest to define correctly in a language like Lisp.  | Macros                               | lab12, hw09 | |
 | Evaluation procedure of a macro call expression | • Evaluate the operator sub-expression, which evaluates to a macro<br>• Call the macro procedure on the operand expressions without evaluating them first<br>• Evaluate the expression returned from the macro procedure| Macros                               | lab12, hw09 | |                        
-## Projects
+<h2 id = "projects">4. Projects</h2>
 1. [Game Hog](week2/hog)
 2. [Cats](week5/cats)
 3. [Ants](week8/ants)
