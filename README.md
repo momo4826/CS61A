@@ -91,9 +91,11 @@ Here you can find notes, lab and homework solutions, and projects for UC Berkele
 | What are functional programming? | 1. All functions are pure functions<br>2. No re-assignment and no mutable data types<br>3. Name-value bindings are permanent |                                      |||
 |The advantage of tail call? | A call expression is not a tail call if more computation is still required in the calling procedure. <br>The return value of the tail call is the return value of the current procedure call. Therefore, tail calls shouldn't increase the environment size. | Tail calls                           | | |
 | what are macros? | A macro is an operation performed on the source code of a program before evaluation.  Macros exist in many languages, but are easiest to define correctly in a language like Lisp.  | Macros                               | lab12, hw09 | |
-| Evaluation procedure of a macro call expression | • Evaluate the operator sub-expression, which evaluates to a macro<br>• Call the macro procedure on the operand expressions without evaluating them first<br>• Evaluate the expression returned from the macro procedure| Macros                               | lab12, hw09 | |                        
+| Evaluation procedure of a macro call expression | • Evaluate the operator sub-expression, which evaluates to a macro<br>• Call the macro procedure on the operand expressions without evaluating them first<br>• Evaluate the expression returned from the macro procedure| Macros                               | lab12, hw09 | |    
+
 <h2 id = "projects">4. Projects</h2>
-1. [Game Hog](week2/hog)
-2. [Cats](week5/cats)
-3. [Ants](week8/ants)
-4. [Scheme(Interpreter)](week11/scheme)
+
+1. [Game Hog](./week2/hog)
+2. [Cats](./week5/cats)
+3. [Ants](./week8/ants)
+4. [Scheme(Interpreter)](./week11/scheme)
